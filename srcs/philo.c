@@ -40,6 +40,7 @@ int	main(int ac, char **av)
 {
     t_info  info;
     t_philo *philo;
+    int i;
 	
     if (ac < 5 || ac > 6)
         ft_putstr_fd("Wrong Number of Arguments !\n", 1);
@@ -52,7 +53,7 @@ int	main(int ac, char **av)
         }
         init_info(&info, av);
         philo = NULL;
-        philo = create_philo(&info);
+        philo = check_philo(&info);
         if (!philo)
         {
             ft_putstr_fd("Error Creating Philosophers !\n", 1);
@@ -63,15 +64,18 @@ int	main(int ac, char **av)
             ft_putstr_fd("Error Creating Philosophers !\n", 1);
             return (1);
         }
-        // if (philo)
-        // {
-        //     while (philo->next)
-        //     {
-        //         printf("philo id - %d | time_die - %d | must_eat - %d\n", philo->id, philo->time_die, philo->nr_must_eat);
-        //         philo = philo->next;
-        //     }
-        //     printf("philo id - %d | time_die - %d | must_eat - %d\n", philo->id, philo->time_die, philo->nr_must_eat);
-        // }
+        if (philo)
+        {
+            i = 1;
+            while (i <= info.nr_philo)
+            {
+                //printf("ola\n");
+                printf("fork_right - %d | fork_left - %d\n", philo[i-1].fork->right, philo[i-1].fork->left);
+                //printf("philo id - %d | time_die - %d | must_eat - %d\n", philo[i-1].id, philo[i-1].time_die, philo[i-1].nr_must_eat);
+                i++;
+            }
+           
+         }
         // printf("nr_philo - %d\n", info.nr_philo);
         // printf("time_die - %d\n", info.time_die);
         // printf("time_eat - %d\n", info.time_eat);

@@ -1,55 +1,38 @@
 #include "../philo.h"
 #include "../libft/libft.h"
 
-t_philo	*last_philo(t_philo *philo)
+void    init_philo(t_info *info, t_philo **philo, int i, int j)
 {
-	if (!philo)
-		return (NULL);
-	while (philo->next)
-		philo = philo->next;
-	return (philo);
+    (*philo)[i].id = j;
+    (*philo)[i].time_die = info->time_die;
+    (*philo)[i].nr_must_eat = info->nr_must_eat;
+    (*philo)[i].fork = malloc(sizeof(t_fork));
+    (*philo)[i].fork->right = i;
+    if (j == info->nr_philo)
+        j = 0;
+    (*philo)[i].fork->left = j;
 }
 
-t_philo *new_philo(t_info *info, int index)
+t_philo *create_philo(t_info *info, t_philo **philo)
 {
-    t_philo *tmp_philo;
-
-	tmp_philo = malloc(sizeof(t_philo));
-	if (!tmp_philo)
-		ft_putstr_fd("Error Creating Philo\n", 1);
-	tmp_philo->id = index;
-    tmp_philo->time_die = info->time_die;
-    tmp_philo->nr_must_eat = info->nr_must_eat;
-	tmp_philo->next = NULL;
-	return (tmp_philo);
-}
-
-t_philo *init_philo(t_info *info)
-{
-    t_philo *tmp_philo;
-    t_philo *first_philo;
     int i;
+    int j;
 
-    i = 1;
-    tmp_philo = NULL;
-    while (i <= info->nr_philo)
+    *philo = malloc(sizeof(t_philo) * (info->nr_philo));
+    if (*philo == NULL)
+        return (NULL);
+    i = 0;
+    j = 1;
+    while (j <= info->nr_philo)
     {
-        if (!tmp_philo)
-        {
-            tmp_philo = new_philo(info, i);
-            first_philo = tmp_philo;
-        }
-        else
-        {
-            tmp_philo = last_philo(tmp_philo);
-            tmp_philo->next = new_philo(info, i);
-        }
+        init_philo(info, philo, i, j);
         i++;
+        j++;
     }
-    return (first_philo);
+    return (*philo);
 }
 
-t_philo *create_philo(t_info *info)
+t_philo *check_philo(t_info *info)
 {
     t_philo *philo;
 
@@ -57,7 +40,7 @@ t_philo *create_philo(t_info *info)
         printf("ola\n");
     else
     {
-        philo = init_philo(info);
+        create_philo(info, &philo);
     }
     return (philo);
 }
