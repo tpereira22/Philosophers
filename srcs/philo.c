@@ -1,5 +1,4 @@
-#include "../philo.h"
-#include "../libft/libft.h"
+#include "philo.h"
 
 
 void    init_info(t_info *info, char **av)
@@ -39,43 +38,46 @@ int check_args(char **av)
 int	main(int ac, char **av)
 {
     t_info  info;
-    t_philo *philo;
     int i;
-	
+
     if (ac < 5 || ac > 6)
-        ft_putstr_fd("Wrong Number of Arguments !\n", 1);
+        printf("Wrong Number of Arguments !\n");
     else
     {    
         if (!check_args(av))
         {
-            ft_putstr_fd("Invalid Arguments !\n", 1);
+            printf("Invalid Arguments !\n");
             return (1);
         }
         init_info(&info, av);
-        philo = NULL;
-        philo = check_philo(&info);
-        if (!philo)
+        create_philo(&info);
+        if (!info.philo)
         {
-            ft_putstr_fd("Error Creating Philosophers !\n", 1);
+            printf("Error Creating Philosophers !\n");
             return (1);
         }
-        if (!create_threads(&info, &philo))
+        if (!create_threads(&info))
         {
-            ft_putstr_fd("Error Creating Philosophers !\n", 1);
+            printf("Error Creating Threads !\n");
             return (1);
         }
-        if (philo)
+        i = 0;
+        while (i < info.nr_philo)
+        {
+            pthread_mutex_destroy(&info.m_fork[i]);
+            i++;
+        }
+        if (info.philo)
         {
             i = 1;
             while (i <= info.nr_philo)
             {
-                //printf("ola\n");
-                printf("fork_right - %d | fork_left - %d\n", philo[i-1].fork->right, philo[i-1].fork->left);
+                printf("fork_right - %d | fork_left - %d\n", info.philo[i-1].fork_right, info.philo[i-1].fork_left);
                 //printf("philo id - %d | time_die - %d | must_eat - %d\n", philo[i-1].id, philo[i-1].time_die, philo[i-1].nr_must_eat);
                 i++;
             }
            
-         }
+        }
         // printf("nr_philo - %d\n", info.nr_philo);
         // printf("time_die - %d\n", info.time_die);
         // printf("time_eat - %d\n", info.time_eat);

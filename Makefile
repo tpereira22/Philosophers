@@ -1,10 +1,8 @@
 NAME		= philo
 
-SRCS		= srcs/philo.c srcs/handle_philo.c srcs/handle_threads.c
+SRCS		= srcs/philo.c srcs/philo_utils.c srcs/handle_philo.c srcs/handle_threads.c srcs/handle_actions.c srcs/handle_mutex.c
 
 OBJS		= $(SRCS:.c=.o)
-
-LIBFTA		= ./libft/libft.a
 
 RM		= rm -f
 
@@ -15,18 +13,14 @@ CC		= cc -Wall -Wextra -Werror -pthread #-g -fsanitize=address
 
 all:		$(NAME)
 
-$(NAME): 	$(LIBFTA) $(OBJS)
-			$(CC) $(OBJS) $(LIBFTA) -o $(NAME)
-
-$(LIBFTA):
-			@make -C libft
+$(NAME): 	$(OBJS)
+			$(CC) $(OBJS) -o $(NAME)
 
 clean:
 			$(RM) $(OBJS)
 
 fclean:		clean
 			$(RM) $(NAME)
-			make -C libft fclean
 
 re:			fclean all
 
