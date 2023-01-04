@@ -1,8 +1,36 @@
 #include "philo.h"
 
-long long	get_time(void)
+// tv.sec - seconds | tv.usec - microseconds
+
+long long	get_time(long long t0)
 {
-	
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return (((time.tv_sec * 1000) + (time.tv_usec * 0.001)) - t0);
+}
+
+int	check_odd(int i)
+{
+	if (i % 2 == 0)
+		return (2);
+	else
+		return (1);
+}
+
+int	check_philo_dead(t_info *info, int i)
+{
+	if ((get_time(info->start_time) - info->philo[i].last_eat) < info->time_die)
+	{
+		// printf("now - %lld | last_eat - %lld | time_die - %d | wait ms - %lld\n", get_time(info->start_time), info->philo[i].last_eat, info->time_die, (get_time(info->start_time) - info->philo[i].last_eat));
+		return (1);
+	}
+	else
+    {
+		// printf("now - %lld | last_eat - %lld | time_die - %d | wait ms - %lld\n", get_time(info->start_time), info->philo[i].last_eat, info->time_die, (get_time(info->start_time) - info->philo[i].last_eat));
+        printf("%s%lld ms - Philosopher %d has died\n", RED, get_time(info->start_time), info->philo[i].id);
+        exit (1);
+    }
 }
 
 int	ft_atoi(const char *str)

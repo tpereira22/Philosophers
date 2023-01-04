@@ -67,17 +67,16 @@ int	main(int ac, char **av)
             pthread_mutex_destroy(&info.m_fork[i]);
             i++;
         }
-        if (info.philo)
-        {
-            i = 1;
-            while (i <= info.nr_philo)
-            {
-                printf("fork_right - %d | fork_left - %d\n", info.philo[i-1].fork_right, info.philo[i-1].fork_left);
-                //printf("philo id - %d | time_die - %d | must_eat - %d\n", philo[i-1].id, philo[i-1].time_die, philo[i-1].nr_must_eat);
-                i++;
-            }
-           
-        }
+        // if (info.philo)
+        // {
+        //     i = 1;
+        //     while (i <= info.nr_philo)
+        //     {
+        //         printf("fork_right - %d | fork_left - %d\n", info.philo[i-1].fork_right, info.philo[i-1].fork_left);
+        //         //printf("philo id - %d | time_die - %d | must_eat - %d\n", philo[i-1].id, philo[i-1].time_die, philo[i-1].nr_must_eat);
+        //         i++;
+        //     }
+        // }
         // printf("nr_philo - %d\n", info.nr_philo);
         // printf("time_die - %d\n", info.time_die);
         // printf("time_eat - %d\n", info.time_eat);

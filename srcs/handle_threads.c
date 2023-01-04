@@ -26,9 +26,15 @@ void    *routine(void *args)
 
 void    routine_exec(t_info *info, int i)
 {
-    p_eat(info, i);
-    p_sleep(info, i);
-    p_think(info, i);
+    if (check_philo_dead(info, i))
+    {    
+        if (!p_eat(info, i))
+            printf("Error mutex lock");
+    }
+    if (check_philo_dead(info, i))
+        p_sleep(info, i);
+    if (check_philo_dead(info, i))
+        p_think(info, i);
 }
 
 int create_threads(t_info *info)
@@ -36,15 +42,16 @@ int create_threads(t_info *info)
     int i;
 
     i = 0;
+    info->start_time = get_time(0);
     while ((i + 1) <= info->nr_philo)
     {
         info->thread_nr = i;
+        info->philo[i].last_eat = get_time(info->start_time);
         pthread_create(&info->philo[i].philo_thread, NULL, &routine, (void*)info);
         //printf("i - %d\n", i);
-        i++;
         usleep(1000);
+        i++;
     }
-    //printf("%d\n", get_time(0));
     i = 0;
     while ((i + 1) <= info->nr_philo)
     {
