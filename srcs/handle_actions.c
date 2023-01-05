@@ -2,7 +2,7 @@
 
 int p_eat(t_info *info, int i)
 {
-    //usleep(500);
+    usleep(500);
     if (info->nr_philo == 1)
     {
         philo_odd(info, i);

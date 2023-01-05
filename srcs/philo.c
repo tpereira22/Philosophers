@@ -42,12 +42,12 @@ int	main(int ac, char **av)
     //int i;
 
     if (ac < 5 || ac > 6)
-        printf("Wrong Number of Arguments !\n");
+        printf("Error! Wrong Number of Arguments !\n");
     else
     {    
         if (!check_args(av))
         {
-            printf("Invalid Arguments !\n");
+            printf("Error! Invalid Arguments !\n");
             return (1);
         }
         init_info(&info, av);
