@@ -36,12 +36,6 @@ int check_args(char **av)
     return (1);
 }
 
-void    one_philo(t_info *info)
-{
-    info->start_time = get_time(0);
-    pthread_create(&info->philo[0].philo_thread, NULL, &routine_one, (void*)info);
-}
-
 int	main(int ac, char **av)
 {
     t_info  info;
@@ -63,8 +57,6 @@ int	main(int ac, char **av)
             printf("Error Creating Philosophers !\n");
             return (1);
         }
-        // if (info.nr_philo == 1)
-        //     one_philo(&info);
         if (!create_threads(&info))
         {
             printf("Error Creating Threads !\n");

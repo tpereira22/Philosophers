@@ -11,8 +11,16 @@ void    *routine(void *args)
     {
         while ((info->philo[i].eat_counter < info->nr_must_eat) && (info->dead_flag == 0))
         {
-            if (!routine_exec(info, i))
-                break ;
+            if (i == info->nr_philo)
+            {
+                if (!check_all_philos(info))
+                    break ;
+            }
+            else
+            {
+                if (!routine_exec(info, i))
+                    break ;
+            }
         }
         close_sim(info, i);
     }
@@ -20,8 +28,16 @@ void    *routine(void *args)
     {
         while (info->dead_flag == 0)
         {
-            if (!routine_exec(info, i))
-                break ;
+            if (i == info->nr_philo)
+            {
+                if (!check_all_philos(info))
+                    break ;
+            }
+            else
+            {
+                if (!routine_exec(info, i))
+                    break ;
+            }
         }
         close_sim(info, i);
     }
@@ -40,6 +56,7 @@ int routine_exec(t_info *info, int i)
     if (info->dead_flag != 0 || !check_all_philos(info))
         return (0);
     p_think(info, i);
+    info->philo[i].fork = 0;
     return (1);
 }
 
@@ -49,7 +66,7 @@ int create_threads(t_info *info)
 
     i = 0;
     info->start_time = get_time(0);
-    while ((i + 1) <= info->nr_philo)
+    while (i <= info->nr_philo)
     {
         info->thread_nr = i;
         info->philo[i].last_eat = get_time(info->start_time);
@@ -65,16 +82,4 @@ int create_threads(t_info *info)
         i++;
     }
     return (1);
-}
-
-void    *routine_one(void *args)
-{
-    t_info *info;
-
-    info = (t_info *)args;
-    info->philo[0].last_eat = get_time(info->start_time);
-    info->m_fork = malloc(sizeof(pthread_mutex_t));
-    pthread_mutex_init(&info->m_fork[0], NULL);
-
-    return (NULL);
 }

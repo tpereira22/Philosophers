@@ -12,4 +12,5 @@ void    close_sim(t_info *info, int i)
         pthread_mutex_destroy(&info->m_fork[i]);
         c++;
     }
+    pthread_mutex_destroy(&info->m_dead_philo);
 }

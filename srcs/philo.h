@@ -20,6 +20,7 @@ typedef struct s_philo
     int 			id;
     int 			eat_counter;
     int 			time_die;
+    int             fork;
     int             fork_right;
     int             fork_left;
     int             philo_dead;
@@ -35,14 +36,16 @@ typedef struct s_info
     int 			time_sleep;
     int 			nr_must_eat;
     int             thread_nr;
+    int             checker_id;
+    pthread_mutex_t m_dead_philo;
     pthread_mutex_t *m_fork;
+    pthread_t       check_thread;
     t_philo         *philo;
 }   t_info;
 
 // philo.c
 int	check_args(char **av);
 void    init_info(t_info *info, char **av);
-void    one_philo(t_info *info);
 
 //philo_utils.c
 int	ft_atoi(const char *str);
@@ -59,9 +62,8 @@ int philo_odd(t_info *info, int i);
 
 // handle_threads.c
 int	create_threads(t_info *info);
-void    *routine(void *info);
+void    *routine(void *args);
 int routine_exec(t_info *info, int i);
-void    *routine_one(void *args);
 
 //handle_actions.c
 int p_eat(t_info *info, int i);

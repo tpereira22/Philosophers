@@ -6,6 +6,7 @@ int init_philo(t_info *info, int i, int j)
     info->philo[i].time_die = info->time_die;
     info->philo[i].eat_counter = 0;
     info->philo[i].philo_dead = 0;
+    info->philo[i].fork = 0;
     info->philo[i].fork_left = i;
     if (j == info->nr_philo)
         j = 0;
@@ -18,7 +19,7 @@ t_info *create_philo(t_info *info)
     int i;
     int j;
 
-    info->philo = malloc(sizeof(t_philo) * (info->nr_philo));
+    info->philo = malloc(sizeof(t_philo) * (info->nr_philo + 1));
     if (info->philo == NULL)
         return (NULL);
     i = 0;
