@@ -37,3 +37,39 @@ t_info *create_philo(t_info *info)
     }
     return (info);
 }
+
+int philo_even(t_info *info, int i)
+{
+    if (!lock_left_fork(info, i))
+        return (0);
+    if (info->dead_flag != 0 || !check_all_philos(info))
+        return (0);
+    if (!lock_right_fork(info, i))
+        return (0);
+    return (1);
+}
+
+int philo_odd(t_info *info, int i)
+{
+    if (info->nr_philo == 1)
+    {
+        if (info->dead_flag != 0 || !check_philo_dead(info, i))
+            return (0);
+        if (!lock_left_fork(info, i))
+            return (0);
+        pthread_mutex_unlock(&info->m_fork[info->philo[i].fork_left]);
+        return (0);
+    }
+    else
+    {   
+        if (info->dead_flag != 0 || !check_all_philos(info))
+            return (0);
+        if (!lock_right_fork(info, i))
+            return (0);
+        if (info->dead_flag != 0 || !check_all_philos(info))
+            return (0);
+        if (!lock_left_fork(info, i))
+            return (0);
+        return (1);
+    }
+}

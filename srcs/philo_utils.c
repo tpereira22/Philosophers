@@ -18,6 +18,20 @@ int	check_odd(int i)
 		return (1);
 }
 
+int	check_all_philos(t_info *info)
+{
+	int i;
+
+	i = 0;
+	while (i < info->nr_philo)
+	{
+		if (!check_philo_dead(info, i))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	check_philo_dead(t_info *info, int i)
 {
 	if ((get_time(info->start_time) - info->philo[i].last_eat) < info->time_die)
@@ -28,8 +42,9 @@ int	check_philo_dead(t_info *info, int i)
 	else
     {
 		// printf("now - %lld | last_eat - %lld | time_die - %d | wait ms - %lld\n", get_time(info->start_time), info->philo[i].last_eat, info->time_die, (get_time(info->start_time) - info->philo[i].last_eat));
-        printf("%s%lld ms - Philosopher %d has died\n", RED, get_time(info->start_time), info->philo[i].id);
-        exit (1);
+        info->dead_flag = 1;
+		printf("%s%lld ms - Philosopher %d has died\n", RED, get_time(info->start_time), info->philo[i].id);
+        return (0);
     }
 }
 

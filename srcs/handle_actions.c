@@ -2,22 +2,29 @@
 
 int p_eat(t_info *info, int i)
 {
-    if (check_odd(info->philo[i].id) == 1)
-        lock_right_fork(info, i);
-    else
-        lock_left_fork(info, i);
-    if (check_odd(info->philo[i].id) == 2)
-        lock_right_fork(info, i);
-    else
-        lock_left_fork(info, i);
-    if (check_philo_dead(info, i))
+    usleep(500);
+    if (info->nr_philo == 1)
     {
-        printf("%s%lld ms - Philosopher %d is eating\n", GREEN, get_time(info->start_time), info->philo[i].id);
-        usleep(info->time_eat * 1000);
-        info->philo[i].last_eat = get_time(info->start_time);
-        if (info->nr_must_eat > 0)
-            info->philo[i].eat_counter++;
+        philo_odd(info, i);
+        return (1);
     }
+    if (check_odd(info->philo[i].id) == 1)
+    {
+        if (!philo_odd(info, i))
+            return (0);
+    }
+    else
+    {
+        if (!philo_even(info, i))
+            return (0);
+    }
+    if (info->dead_flag != 0 || !check_all_philos(info))
+        return (0);
+    printf("%s%lld ms - Philosopher %d is eating\n", GREEN, get_time(info->start_time), info->philo[i].id);
+    info->philo[i].last_eat = get_time(info->start_time);
+    usleep(info->time_eat * 1000);
+    if (info->nr_must_eat > 0)
+        info->philo[i].eat_counter++;
     pthread_mutex_unlock(&info->m_fork[info->philo[i].fork_right]);
     pthread_mutex_unlock(&info->m_fork[info->philo[i].fork_left]);
     return (1);

@@ -9,32 +9,38 @@ void    *routine(void *args)
     i = info->thread_nr;
     if (info->nr_must_eat > 0)
     {
-        while ((info->philo[i].eat_counter < info->nr_must_eat) && (info->philo[i].philo_dead == 0))
+        while ((info->philo[i].eat_counter < info->nr_must_eat) && (info->dead_flag == 0))
         {
-            routine_exec(info, i);
+            if (!routine_exec(info, i))
+                break ;
         }
+        close_sim(info, i);
     }
     else
     {
-        while (info->philo[i].philo_dead == 0)
+        while (info->dead_flag == 0)
         {
-            routine_exec(info, i);
+            if (!routine_exec(info, i))
+                break ;
         }
+        close_sim(info, i);
     }
     return (NULL);
 }
 
-void    routine_exec(t_info *info, int i)
+int routine_exec(t_info *info, int i)
 {
-    if (check_philo_dead(info, i))
-    {    
-        if (!p_eat(info, i))
-            printf("Error mutex lock");
-    }
-    if (check_philo_dead(info, i))
-        p_sleep(info, i);
-    if (check_philo_dead(info, i))
-        p_think(info, i);
+    if (info->dead_flag != 0 || (!p_eat(info, i)))
+        return (0);
+    if (info->nr_philo == 1)
+        usleep(info->time_die * 1000);
+    if (info->dead_flag != 0 || !check_all_philos(info))
+        return (0);
+    p_sleep(info, i);
+    if (info->dead_flag != 0 || !check_all_philos(info))
+        return (0);
+    p_think(info, i);
+    return (1);
 }
 
 int create_threads(t_info *info)
@@ -59,4 +65,16 @@ int create_threads(t_info *info)
         i++;
     }
     return (1);
+}
+
+void    *routine_one(void *args)
+{
+    t_info *info;
+
+    info = (t_info *)args;
+    info->philo[0].last_eat = get_time(info->start_time);
+    info->m_fork = malloc(sizeof(pthread_mutex_t));
+    pthread_mutex_init(&info->m_fork[0], NULL);
+
+    return (NULL);
 }
