@@ -9,7 +9,7 @@ void    *routine(void *args)
     i = info->thread_nr;
     if (info->nr_must_eat > 0)
     {
-        while ((info->philo[i].eat_counter < info->nr_must_eat) && (info->dead_flag == 0))
+        while (check_eat_all(info) && (info->dead_flag == 0))
         {
             if (i == info->nr_philo)
             {

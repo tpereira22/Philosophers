@@ -22,6 +22,11 @@ int	check_all_philos(t_info *info)
 {
 	int i;
 
+	if (info->nr_must_eat > 0)
+	{
+		if (!check_eat_all(info))
+			return (0);
+	}
 	i = 0;
 	while (i < info->nr_philo)
 	{

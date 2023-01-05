@@ -25,8 +25,10 @@ int p_eat(t_info *info, int i)
         printf("%s%lld ms - Philosopher %d is eating\n", GREEN, get_time(info->start_time), info->philo[i].id);
         info->philo[i].last_eat = get_time(info->start_time);
         usleep(info->time_eat * 1000);
-        if (info->nr_must_eat > 0)
-            info->philo[i].eat_counter++;
+        info->philo[i].eat_counter += 1;
+        if (info->dead_flag != 0 || !check_all_philos(info))
+            return (0);
+        //printf("eat-counter - %d\n", info->philo[i].eat_counter);
         pthread_mutex_unlock(&info->m_fork[info->philo[i].fork_right]);
         pthread_mutex_unlock(&info->m_fork[info->philo[i].fork_left]);
     }

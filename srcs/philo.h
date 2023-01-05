@@ -37,6 +37,7 @@ typedef struct s_info
     int 			nr_must_eat;
     int             thread_nr;
     int             checker_id;
+    pthread_mutex_t m_check_eat;
     pthread_mutex_t m_dead_philo;
     pthread_mutex_t *m_fork;
     pthread_t       check_thread;
@@ -77,5 +78,6 @@ int lock_left_fork(t_info *info, int i);
 
 //close_sim.c
 void    close_sim(t_info *info, int i);
+int check_eat_all(t_info *info);
 
 #endif

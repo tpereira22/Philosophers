@@ -14,6 +14,8 @@ int create_mutex(t_info *info)
     }
     if (pthread_mutex_init(&info->m_dead_philo, NULL))
         return (0);
+    if (pthread_mutex_init(&info->m_check_eat, NULL))
+        return (0);
     return (1);
 }
 
