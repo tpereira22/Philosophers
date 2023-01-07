@@ -25,13 +25,19 @@ int	check_all_philos(t_info *info)
 	if (info->nr_must_eat > 0)
 	{
 		if (!check_eat_all(info))
+		{
+			//printf("%lld - END!\n", get_time(info->start_time));
 			return (0);
+		}
 	}
 	i = 0;
 	while (i < info->nr_philo)
 	{
 		if (!check_philo_dead(info, i))
+		{
+			//printf("%lld - END!\n", get_time(info->start_time));
 			return (0);
+		}
 		i++;
 	}
 	return (1);

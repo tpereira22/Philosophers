@@ -41,9 +41,11 @@ t_info *create_philo(t_info *info)
 
 int philo_even(t_info *info, int i)
 {
+    if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
+        return (0);
     if (!lock_left_fork(info, i))
         return (0);
-    if (info->dead_flag != 0 || !check_all_philos(info))
+    if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
         return (0);
     if (!lock_right_fork(info, i))
         return (0);
@@ -62,12 +64,12 @@ int philo_odd(t_info *info, int i)
         return (0);
     }
     else
-    {   
-        if (info->dead_flag != 0 || !check_all_philos(info))
+    {
+        if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
             return (0);
         if (!lock_right_fork(info, i))
             return (0);
-        if (info->dead_flag != 0 || !check_all_philos(info))
+        if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
             return (0);
         if (!lock_left_fork(info, i))
             return (0);

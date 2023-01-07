@@ -29,6 +29,7 @@ typedef struct s_philo
 typedef struct s_info
 {
     long long       start_time;
+    int             eat_flag;
     int             dead_flag;
     int 			nr_philo;
     int 			time_die;
@@ -37,6 +38,8 @@ typedef struct s_info
     int 			nr_must_eat;
     int             thread_nr;
     int             checker_id;
+    pthread_mutex_t m_print_lock2;
+    pthread_mutex_t m_print_lock;
     pthread_mutex_t m_check_eat;
     pthread_mutex_t m_dead_philo;
     pthread_mutex_t *m_fork;

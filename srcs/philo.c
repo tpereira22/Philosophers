@@ -8,6 +8,7 @@ void    init_info(t_info *info, char **av)
     info->time_eat = ft_atoi(av[3]);
     info->time_sleep = ft_atoi(av[4]);
     info->dead_flag = 0;
+    info->eat_flag = 0;
     if (av[5])
         info->nr_must_eat = ft_atoi(av[5]);
     else

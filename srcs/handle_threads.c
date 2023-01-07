@@ -9,7 +9,7 @@ void    *routine(void *args)
     i = info->thread_nr;
     if (info->nr_must_eat > 0)
     {
-        while (check_eat_all(info) && (info->dead_flag == 0))
+        while ((info->eat_flag == 0) && (info->dead_flag == 0))
         {
             if (i == info->nr_philo)
             {
@@ -46,14 +46,14 @@ void    *routine(void *args)
 
 int routine_exec(t_info *info, int i)
 {
-    if (info->dead_flag != 0 || (!p_eat(info, i)))
+    if (info->eat_flag != 0 || info->dead_flag != 0 || (!p_eat(info, i)))
         return (0);
     if (info->nr_philo == 1)
         usleep(info->time_die * 1000);
-    if (info->dead_flag != 0 || !check_all_philos(info))
+    if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
         return (0);
     p_sleep(info, i);
-    if (info->dead_flag != 0 || !check_all_philos(info))
+    if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
         return (0);
     p_think(info, i);
     info->philo[i].fork = 0;

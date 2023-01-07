@@ -15,6 +15,8 @@ void    close_sim(t_info *info, int i)
     }
     pthread_mutex_destroy(&info->m_dead_philo);
     pthread_mutex_destroy(&info->m_check_eat);
+    pthread_mutex_destroy(&info->m_print_lock);
+    pthread_mutex_destroy(&info->m_print_lock2);
 }
 
 int check_eat_all(t_info *info)
@@ -34,6 +36,7 @@ int check_eat_all(t_info *info)
     }
     if (c == info->nr_philo)
     {
+        info->eat_flag = 1;
         return (0);
     }
     pthread_mutex_unlock(&info->m_check_eat);
