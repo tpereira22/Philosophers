@@ -21,8 +21,8 @@ typedef struct s_philo
     int 			eat_counter;
     int 			time_die;
     int             fork;
-    int             fork_right;
-    int             fork_left;
+    int             right;
+    int             left;
     int             philo_dead;
 }	t_philo;
 
@@ -37,8 +37,6 @@ typedef struct s_info
     int 			time_sleep;
     int 			nr_must_eat;
     int             thread_nr;
-    int             checker_id;
-    pthread_mutex_t m_print_lock2;
     pthread_mutex_t m_print_lock;
     pthread_mutex_t m_check_eat;
     pthread_mutex_t m_dead_philo;
@@ -71,16 +69,18 @@ int routine_exec(t_info *info, int i);
 
 //handle_actions.c
 int p_eat(t_info *info, int i);
-void    p_sleep(t_info *info, int i);
-void    p_think(t_info *info, int i);
+int p_sleep(t_info *info, int i);
+int p_think(t_info *info, int i);
 
 //handle_mutex.c
 int create_mutex(t_info *info);
+//void    destroy_mutex(t_info *info);
 int lock_right_fork(t_info *info, int i);
 int lock_left_fork(t_info *info, int i);
 
 //close_sim.c
 void    close_sim(t_info *info, int i);
+void    free_all(t_info *info);
 int check_eat_all(t_info *info);
 
 #endif

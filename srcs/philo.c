@@ -9,10 +9,12 @@ void    init_info(t_info *info, char **av)
     info->time_sleep = ft_atoi(av[4]);
     info->dead_flag = 0;
     info->eat_flag = 0;
+    info->start_time = 0;
+    info->thread_nr = 0;
     if (av[5])
         info->nr_must_eat = ft_atoi(av[5]);
     else
-        info->nr_must_eat = 0;
+        info->nr_must_eat = -1;
 }
 
 int check_args(char **av)
@@ -63,12 +65,14 @@ int	main(int ac, char **av)
             printf("Error Creating Threads !\n");
             return (1);
         }
+        //destroy_mutex(&info);
+        free_all(&info);
         // if (info.philo)
         // {
         //     i = 1;
         //     while (i <= info.nr_philo)
         //     {
-        //         printf("fork_right - %d | fork_left - %d\n", info.philo[i-1].fork_right, info.philo[i-1].fork_left);
+        //         printf("right - %d | left - %d\n", info.philo[i-1].right, info.philo[i-1].left);
         //         //printf("philo id - %d | time_die - %d | must_eat - %d\n", philo[i-1].id, philo[i-1].time_die, philo[i-1].nr_must_eat);
         //         i++;
         //     }
