@@ -1,8 +1,9 @@
 #include "philo.h"
 
-
 void    init_info(t_info *info, char **av)
 {
+	//int	i;
+
     info->nr_philo = ft_atoi(av[1]);
     info->time_die = ft_atoi(av[2]);
     info->time_eat = ft_atoi(av[3]);
@@ -11,10 +12,19 @@ void    init_info(t_info *info, char **av)
     info->eat_flag = 0;
     info->start_time = 0;
     info->thread_nr = 0;
+	info->mut_flag = 0;
     if (av[5])
         info->nr_must_eat = ft_atoi(av[5]);
     else
         info->nr_must_eat = -1;
+    info->forks = malloc(sizeof(info->forks) * info->nr_philo);
+	memset(info->forks, 0, info->nr_philo);
+    // i = 0;
+	// while (i < info->nr_philo)
+	// {
+	// 	info->forks[i] = 0;
+	// 	i++;
+	// }
 }
 
 int check_args(char **av)

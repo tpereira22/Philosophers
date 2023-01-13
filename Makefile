@@ -6,7 +6,7 @@ OBJS		= $(SRCS:.c=.o)
 
 RM		= rm -f
 
-CC		= cc -Wall -Wextra -Werror -pthread -g -fsanitize=address
+CC		= cc -Wall -Wextra -Werror -pthread #-g -fsanitize=address
 
 .c.o:
 			@$(CC) -c $< -o $@
