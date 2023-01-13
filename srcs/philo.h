@@ -13,6 +13,12 @@
 # define BLUE "\033[0;34m"
 # define CYAN "\033[96m"
 
+# define EAT "is eating"
+# define SLEEP "is sleeping"
+# define THINK "is thinking"
+# define FORK "takes a fork"
+# define DEAD "is dead"
+
 typedef struct s_philo
 {
     pthread_t   	philo_thread;
@@ -20,7 +26,6 @@ typedef struct s_philo
     int 			id;
     int 			eat_counter;
     int 			time_die;
-    int             fork;
     int             right;
     int             left;
     int             philo_dead;
@@ -28,6 +33,7 @@ typedef struct s_philo
 
 typedef struct s_info
 {
+    int             mut_flag;
     long long       start_time;
     int             eat_flag;
     int             dead_flag;
@@ -37,15 +43,16 @@ typedef struct s_info
     int 			time_sleep;
     int 			nr_must_eat;
     int             thread_nr;
+    int             *forks;
     pthread_mutex_t m_print_lock;
     pthread_mutex_t m_check_eat;
     pthread_mutex_t m_dead_philo;
     pthread_mutex_t *m_fork;
-    pthread_t       check_thread;
     t_philo         *philo;
 }   t_info;
 
 // philo.c
+int print_philo(t_info *info, int i, char *color, char *status);
 int	check_args(char **av);
 void    init_info(t_info *info, char **av);
 

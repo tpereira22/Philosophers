@@ -31,7 +31,6 @@ int	check_all_philos(t_info *info)
 		}
 	}
 	i = 0;
-	pthread_mutex_lock(&info->m_dead_philo);
 	while (i < info->nr_philo)
 	{
 		if (!check_philo_dead(info, i))
@@ -41,7 +40,6 @@ int	check_all_philos(t_info *info)
 		}
 		i++;
 	}
-	pthread_mutex_unlock(&info->m_dead_philo);
 	return (1);
 }
 
@@ -55,8 +53,8 @@ int	check_philo_dead(t_info *info, int i)
 	else
     {
 		//printf("now - %lld | last_eat - %lld | time_die - %d | wait ms - %lld\n", get_time(info->start_time), info->philo[i].last_eat, info->time_die, (get_time(info->start_time) - info->philo[i].last_eat));
-        info->dead_flag = 1;
-		printf("%s%lld ms - Philosopher %d has died\n", RED, get_time(info->start_time), info->philo[i].id);
+        print_philo(info, i, RED, DEAD);
+		info->dead_flag = 1;
         return (0);
     }
 }

@@ -4,6 +4,8 @@ int create_threads(t_info *info)
 {
     int i;
 
+    if (pthread_mutex_init(&info->m_dead_philo, NULL))
+        return (0);
     i = 0;
     info->start_time = get_time(0);
     while (i <= info->nr_philo)
@@ -57,8 +59,6 @@ void    *routine(void *args)
 
 int routine_exec(t_info *info, int i)
 {
-    //printf("id - %d\n", info->philo[i].id);
-    // printf("r.fork - %d | l.fork - %d\n", info->philo[i].right, info->philo[i].left);
     if (info->philo[i].id == info->nr_philo + 1)
     {
         if (info->dead_flag != 0 || !check_all_philos(info))
@@ -75,6 +75,22 @@ int routine_exec(t_info *info, int i)
     if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
         return (0);
     p_think(info, i);
-    info->philo[i].fork = 0;
     return (1);
+}
+
+int print_philo(t_info *info, int i, char *color, char *status)
+{
+	if (info->eat_flag != 0 || info->dead_flag != 0)
+		return (0);
+	pthread_mutex_lock(&info->m_dead_philo);
+	if (info->eat_flag != 0 || info->dead_flag != 0)
+	{
+        printf("%s%lld ms - Philosopher %d has died\n", RED, get_time(info->start_time), info->philo[i].id);
+		pthread_mutex_unlock(&info->m_dead_philo);
+		return (0);
+	}
+	else
+		printf("%s%lld ms - Philosopher %d is %s\n", color, get_time(info->start_time), info->philo[i].id, status);
+	pthread_mutex_unlock(&info->m_dead_philo);
+	return(1);
 }
