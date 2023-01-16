@@ -1,80 +1,64 @@
 #include "philo.h"
 
-int create_threads(t_info *info)
-{
-    int i;
-
-    i = 0;
-    info->start_time = get_time(0);
-    while (i <= info->nr_philo)
-    {
-        info->thread_nr = i;
-        info->philo[i].last_eat = get_time(info->start_time);
-        if (pthread_create(&info->philo[i].philo_thread, NULL, &routine, (void*)info))
-            return (0);
-        i++;
-        usleep(1000);
-    }
-    i = 0;
-    while (i <= info->nr_philo)
-    {
-        if (pthread_join(info->philo[i].philo_thread, NULL))
-            return (0);
-        i++;
-    }
-    return (1);
-}
-
 void    *routine(void *args)
 {
-    t_info  *info;
-    int i;
+    t_philo  *philo;
 
-    info = (t_info *)args;
-    if (info->nr_must_eat == 0)
-        return (NULL);
-    i = info->thread_nr;
-    if (info->nr_must_eat > 0)
+    philo = (t_philo *)args;
+    if (philo->id % 2 == 0)
+        usleep(15000);
+    while (check_all(philo))
     {
-        while ((info->eat_flag == 0) && (info->dead_flag == 0))
+        if (philo->id == data()->nr_philo + 1)
         {
-            if (!routine_exec(info, i) || !check_all_philos(info))
-                break ;
+            //printf("id - %d\n", philo->id);
+            check_all(philo);
         }
-        close_sim(info, i);
-    }
-    else
-    {
-        while (info->dead_flag == 0)
-        {  
-            if (!routine_exec(info, i) || !check_all_philos(info))
-                break ;
+        else
+        {
+            if (data()->nr_philo == 1)
+                philo_one(philo);
+            else
+            {
+                if (check_all(philo))
+                    eat(philo);
+                if (check_all(philo))
+                    zzz_sleep(philo);
+                if (check_all(philo))
+                    printf("%s%lld ms -> Philosopher %d %s\n", YELLOW, get_time(data()->start_time), philo->id, THINK);
+            }
         }
-        close_sim(info, i);
     }
     return (NULL);
 }
 
-int routine_exec(t_info *info, int i)
+void    start_threads(t_info *info)
 {
-    //printf("id - %d\n", info->philo[i].id);
-    // printf("r.fork - %d | l.fork - %d\n", info->philo[i].right, info->philo[i].left);
-    if (info->philo[i].id == info->nr_philo + 1)
+    int i;
+
+    if (data()->nr_must_eat == 0)
+        exit(0);
+    data()->start_time = get_time(0);
+    i = -1;
+    while (++i <= data()->nr_philo)
     {
-        if (info->dead_flag != 0 || !check_all_philos(info))
-            return (0);
-        return (1);
+        info->philo[i].last_eat = data()->start_time;
+        if (pthread_create(&info->philo[i].philo_thread, NULL, &routine, &info->philo[i]))
+            p_error(info, "Philo thread fail\n");
+        //usleep(1000);
     }
-    if (info->eat_flag != 0 || info->dead_flag != 0 || (!p_eat(info, i)))
-        return (0);
-    if (info->nr_philo == 1)
-        usleep(info->time_die * 1000);
-    if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
-        return (0);
-    p_sleep(info, i);
-    if (info->eat_flag != 0 || info->dead_flag != 0 || !check_all_philos(info))
-        return (0);
-    p_think(info, i);
-    info->philo[i].fork = 0;
-    return (1);
+    i = -1;
+    while (++i <= data()->nr_philo)
+        pthread_join(info->philo[i].philo_thread, NULL);
+    
+}
+
+void    philo_one(t_philo *philo)
+{
+    printf("%s%lld ms -> Philosopher %d %s\n", CYAN, get_time(data()->start_time), philo->id, FORK);
+    usleep(data()->time_die * 1000);
+    printf("%s%lld ms -> Philosopher %d %s\n", RED, get_time(data()->start_time), philo->id, DEAD);
+    pthread_mutex_lock(&data()->m_dead_philo);
+    data()->dead_flag = 1;
+    pthread_mutex_unlock(&data()->m_dead_philo);
 }
