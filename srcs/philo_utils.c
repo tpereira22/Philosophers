@@ -1,64 +1,70 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_utils.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: timartin <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/16 18:16:17 by timartin          #+#    #+#             */
+/*   Updated: 2023/01/16 18:17:19 by timartin         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-// tv.sec - seconds | tv.usec - microseconds
+int	check_eat(t_philo *philo)
+{
+	pthread_mutex_lock(&data()->m_check_eat);
+	if (philo->eat_lock == 0)
+	{
+		if (philo->eat_counter == data()->nr_must_eat)
+		{
+			data()->eat_flag += 1;
+			philo->eat_lock = 1;
+		}
+		if (data()->eat_flag == data()->nr_philo)
+		{
+			pthread_mutex_unlock(&data()->m_check_eat);
+			return (0);
+		}
+	}
+	pthread_mutex_unlock(&data()->m_check_eat);
+	return (1);
+}
 
+int	check_all(t_philo *philo)
+{
+	pthread_mutex_lock(&data()->m_dead_philo);
+	if (data()->dead_flag == 1 || data()->eat_flag == data()->nr_philo)
+	{
+		pthread_mutex_unlock(&data()->m_dead_philo);
+		return (0);
+	}
+	if ((get_time(0) - philo->last_eat) > data()->time_die)
+	{
+		data()->dead_flag = 1;
+		printf("%s%lld ms -> Philosopher %d %s\n",
+			RED, get_time(data()->start_time), philo->id, DEAD);
+		pthread_mutex_unlock(&data()->m_dead_philo);
+		return (0);
+	}
+	if (!check_eat(philo))
+	{
+		pthread_mutex_unlock(&data()->m_dead_philo);
+		return (0);
+	}
+	pthread_mutex_unlock(&data()->m_dead_philo);
+	return (1);
+}
+
+// tv.sec - seconds | tv.usec - microseconds
+// t0 = 0 -> current time | t0 = start_time -> current ms
 long long	get_time(long long t0)
 {
 	struct timeval	time;
 
 	gettimeofday(&time, NULL);
 	return (((time.tv_sec * 1000) + (time.tv_usec * 0.001)) - t0);
-}
-
-int	check_odd(int i)
-{
-	if (i % 2 == 0)
-		return (2);
-	else
-		return (1);
-}
-
-int	check_all_philos(t_info *info)
-{
-	int i;
-
-	if (info->nr_must_eat > 0)
-	{
-		if (!check_eat_all(info))
-		{
-			//printf("%lld - END!\n", get_time(info->start_time));
-			return (0);
-		}
-	}
-	i = 0;
-	pthread_mutex_lock(&info->m_dead_philo);
-	while (i < info->nr_philo)
-	{
-		if (!check_philo_dead(info, i))
-		{
-			//printf("%lld - END!\n", get_time(info->start_time));
-			return (0);
-		}
-		i++;
-	}
-	pthread_mutex_unlock(&info->m_dead_philo);
-	return (1);
-}
-
-int	check_philo_dead(t_info *info, int i)
-{
-	if ((get_time(info->start_time) - info->philo[i].last_eat) < info->time_die)
-	{
-		// printf("now - %lld | last_eat - %lld | time_die - %d | wait ms - %lld\n", get_time(info->start_time), info->philo[i].last_eat, info->time_die, (get_time(info->start_time) - info->philo[i].last_eat));
-		return (1);
-	}
-	else
-    {
-		//printf("now - %lld | last_eat - %lld | time_die - %d | wait ms - %lld\n", get_time(info->start_time), info->philo[i].last_eat, info->time_die, (get_time(info->start_time) - info->philo[i].last_eat));
-        info->dead_flag = 1;
-		printf("%s%lld ms - Philosopher %d has died\n", RED, get_time(info->start_time), info->philo[i].id);
-        return (0);
-    }
 }
 
 int	ft_atoi(const char *str)
